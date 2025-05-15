@@ -1,127 +1,131 @@
 
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Facebook, Twitter, Instagram, Linkedin, Github, Mail } from "lucide-react";
+import { Facebook, Twitter, Instagram, Github, Mail, Heart } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { toast } from "@/hooks/use-toast";
 
 const Footer = () => {
+  const handleSubscribe = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    toast({
+      title: "Subscribed!",
+      description: "Thank you for subscribing to our newsletter.",
+    });
+    (e.target as HTMLFormElement).reset();
+  };
+
   const currentYear = new Date().getFullYear();
-  
+
   return (
-    <footer className="bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 pt-16 pb-8">
-      <div className="container mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
-          {/* Logo and description */}
-          <div className="lg:col-span-2">
-            <Link to="/" className="inline-block mb-4">
-              <div className="flex items-center gap-2">
-                <div className="h-8 w-8 rounded-full bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center text-white font-bold text-sm">F</div>
-                <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-500">FreelanceHub</span>
+    <footer className="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
+      <div className="container mx-auto px-6 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {/* Column 1: About */}
+          <div>
+            <div className="flex items-center mb-4">
+              <div className="h-8 w-8 rounded-full bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center text-white text-lg font-bold mr-2">
+                F
               </div>
-            </Link>
-            <p className="text-gray-600 dark:text-gray-300 mb-6 max-w-md">
-              Connect with top freelancers or find exciting projects on our marketplace. Post a project or apply for one that matches your skills.
+              <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-indigo-500 to-blue-500">
+                FreelanceHub
+              </span>
+            </div>
+            <p className="text-gray-600 dark:text-gray-400 mb-4">
+              Connecting talented freelancers with amazing projects worldwide.
             </p>
             <div className="flex space-x-4">
-              <motion.a 
-                href="#" 
-                whileHover={{ y: -3 }}
-                className="bg-gray-200 dark:bg-gray-700 p-2 rounded-full text-gray-600 dark:text-gray-300 hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white transition-colors"
-              >
-                <Facebook className="h-4 w-4" />
-              </motion.a>
-              <motion.a 
-                href="#" 
-                whileHover={{ y: -3 }}
-                className="bg-gray-200 dark:bg-gray-700 p-2 rounded-full text-gray-600 dark:text-gray-300 hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white transition-colors"
-              >
-                <Twitter className="h-4 w-4" />
-              </motion.a>
-              <motion.a 
-                href="#" 
-                whileHover={{ y: -3 }}
-                className="bg-gray-200 dark:bg-gray-700 p-2 rounded-full text-gray-600 dark:text-gray-300 hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white transition-colors"
-              >
-                <Instagram className="h-4 w-4" />
-              </motion.a>
-              <motion.a 
-                href="#" 
-                whileHover={{ y: -3 }}
-                className="bg-gray-200 dark:bg-gray-700 p-2 rounded-full text-gray-600 dark:text-gray-300 hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white transition-colors"
-              >
-                <Linkedin className="h-4 w-4" />
-              </motion.a>
+              <SocialIcon icon={<Facebook size={18} />} label="Facebook" />
+              <SocialIcon icon={<Twitter size={18} />} label="Twitter" />
+              <SocialIcon icon={<Instagram size={18} />} label="Instagram" />
+              <SocialIcon icon={<Github size={18} />} label="Github" />
             </div>
           </div>
 
-          {/* Quick Links */}
+          {/* Column 2: Links */}
           <div>
-            <h4 className="text-gray-900 dark:text-white font-semibold mb-4">Quick Links</h4>
+            <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-2">
-              <li>
-                <Link to="/" className="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors">Home</Link>
-              </li>
-              <li>
-                <Link to="/projects" className="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors">Browse Projects</Link>
-              </li>
-              <li>
-                <Link to="/post-project" className="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors">Post a Project</Link>
-              </li>
-              <li>
-                <Link to="/about" className="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors">About Us</Link>
-              </li>
+              <FooterLink to="/projects">Find Projects</FooterLink>
+              <FooterLink to="/post-project">Post a Project</FooterLink>
+              <FooterLink to="/about">About Us</FooterLink>
+              <FooterLink to="/contact">Contact</FooterLink>
             </ul>
           </div>
 
-          {/* Resources */}
+          {/* Column 3: More Links */}
           <div>
-            <h4 className="text-gray-900 dark:text-white font-semibold mb-4">Resources</h4>
+            <h3 className="text-lg font-semibold mb-4">Resources</h3>
             <ul className="space-y-2">
-              <li>
-                <Link to="/terms" className="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors">Terms of Service</Link>
-              </li>
-              <li>
-                <Link to="/privacy" className="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors">Privacy Policy</Link>
-              </li>
-              <li>
-                <a href="#" className="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors">Blog</a>
-              </li>
-              <li>
-                <a href="#" className="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors">Help Center</a>
-              </li>
+              <FooterLink to="/privacy">Privacy Policy</FooterLink>
+              <FooterLink to="/terms">Terms of Service</FooterLink>
+              <FooterLink to="/faq">FAQ</FooterLink>
+              <FooterLink to="/blog">Blog</FooterLink>
             </ul>
           </div>
 
-          {/* Contact */}
+          {/* Column 4: Newsletter */}
           <div>
-            <h4 className="text-gray-900 dark:text-white font-semibold mb-4">Contact</h4>
-            <ul className="space-y-3">
-              <li className="flex items-start">
-                <Mail className="h-5 w-5 text-primary mr-2 mt-0.5" />
-                <span className="text-gray-600 dark:text-gray-300">support@freelancehub.com</span>
-              </li>
-              <li>
-                <Link to="/contact" className="inline-flex items-center text-primary hover:underline">
-                  Contact Us
-                  <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
-                  </svg>
-                </Link>
-              </li>
-            </ul>
+            <h3 className="text-lg font-semibold mb-4">Subscribe to Our Newsletter</h3>
+            <p className="text-gray-600 dark:text-gray-400 mb-4">
+              Get the latest updates and news directly in your inbox.
+            </p>
+            <form onSubmit={handleSubscribe} className="flex flex-col space-y-3">
+              <Input 
+                type="email" 
+                placeholder="Your email address" 
+                required
+                className="border-2 border-gray-200 dark:border-gray-700 focus:border-purple-400 dark:focus:border-purple-600 transition-colors"
+              />
+              <Button 
+                type="submit"
+                className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white transition-all duration-300"
+              >
+                Subscribe
+              </Button>
+            </form>
           </div>
         </div>
-        
-        <div className="border-t border-gray-200 dark:border-gray-700 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-gray-600 dark:text-gray-300 text-sm">© {currentYear} FreelanceHub. All rights reserved.</p>
-          <div className="flex space-x-6 mt-4 md:mt-0">
-            <Link to="/terms" className="text-gray-600 dark:text-gray-300 text-sm hover:text-primary dark:hover:text-primary transition-colors">Terms</Link>
-            <Link to="/privacy" className="text-gray-600 dark:text-gray-300 text-sm hover:text-primary dark:hover:text-primary transition-colors">Privacy</Link>
-            <a href="#" className="text-gray-600 dark:text-gray-300 text-sm hover:text-primary dark:hover:text-primary transition-colors">Cookies</a>
-          </div>
+
+        <div className="border-t border-gray-200 dark:border-gray-800 mt-10 pt-6 flex flex-col md:flex-row justify-between items-center">
+          <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 md:mb-0">
+            &copy; {currentYear} FreelanceHub. All rights reserved.
+          </p>
+          <motion.p 
+            className="text-gray-600 dark:text-gray-400 text-sm flex items-center"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            Made with <Heart className="h-4 w-4 mx-1 text-red-500 inline" /> in India
+          </motion.p>
         </div>
       </div>
     </footer>
   );
 };
+
+const FooterLink = ({ to, children }) => (
+  <li>
+    <Link 
+      to={to}
+      className="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors"
+    >
+      {children}
+    </Link>
+  </li>
+);
+
+const SocialIcon = ({ icon, label }) => (
+  <motion.a
+    href="#"
+    aria-label={label}
+    whileHover={{ scale: 1.1 }}
+    whileTap={{ scale: 0.95 }}
+    className="bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 p-2 rounded-full transition-colors"
+  >
+    {icon}
+  </motion.a>
+);
 
 export default Footer;

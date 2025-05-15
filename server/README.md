@@ -1,7 +1,7 @@
 
-# FreelanceHub Server
+# Freelance Project Marketplace Backend
 
-This is the server-side application for FreelanceHub, providing API endpoints for the client application.
+This is the FastAPI backend for the Freelance Project Marketplace application.
 
 ## Setup
 
@@ -37,16 +37,9 @@ Once the server is running, you can access the interactive API documentation at:
 - Swagger UI: http://localhost:8000/docs
 - ReDoc: http://localhost:8000/redoc
 
-## Features
-- User authentication and management
-- Project CRUD operations
-- Search and filtering functionality
-- File uploads
-- Payment processing
+## Endpoints
 
-## Technology Stack
-- FastAPI
-- Python
-- MongoDB (with Motor)
-- JWT Authentication
-- Python-dotenv
+- `GET /projects` - Get all projects with optional filtering and pagination
+- `POST /projects` - Create a new project
+- `GET /projects/{project_id}` - Get a specific project by ID
+- `PATCH /projects/{project_id}/status` - Update a project's status (mark as completed)
