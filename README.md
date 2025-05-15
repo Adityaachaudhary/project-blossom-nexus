@@ -1,73 +1,109 @@
-# Welcome to your Lovable project
 
-## Project info
+# Freelance Project Marketplace
 
-**URL**: https://lovable.dev/projects/a04b1f57-d51b-42b3-a1c0-f37236f9f0e3
+A full-stack web application for posting and browsing freelance projects. Built with React, FastAPI, and MongoDB.
 
-## How can I edit this code?
+## Features
 
-There are several ways of editing your application.
+- View available freelance projects
+- Post new projects with details and tech stack
+- Filter and search projects by technology, budget, and status
+- View project details
+- Mark projects as completed
 
-**Use Lovable**
+## Tech Stack
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/a04b1f57-d51b-42b3-a1c0-f37236f9f0e3) and start prompting.
+### Frontend
+- React
+- TypeScript
+- Redux Toolkit
+- Tailwind CSS
+- Framer Motion
+- Axios
 
-Changes made via Lovable will be committed automatically to this repo.
+### Backend
+- FastAPI (Python)
+- MongoDB
+- Pydantic
 
-**Use your preferred IDE**
+## Getting Started
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Prerequisites
+- Node.js (v16+)
+- Python (v3.8+)
+- MongoDB
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Frontend Setup
 
-Follow these steps:
+1. Clone the repository
+2. Install dependencies:
+   ```
+   npm install
+   ```
+3. Create a `.env` file in the project root:
+   ```
+   VITE_API_URL=http://localhost:8000
+   ```
+4. Run the development server:
+   ```
+   npm run dev
+   ```
+5. Open your browser and navigate to `http://localhost:8080`
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### Backend Setup
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+1. Navigate to the `backend` directory:
+   ```
+   cd backend
+   ```
+2. Create a virtual environment:
+   ```
+   python -m venv venv
+   ```
+3. Activate the virtual environment:
+   - Windows: `venv\Scripts\activate`
+   - macOS/Linux: `source venv/bin/activate`
+4. Install dependencies:
+   ```
+   pip install -r requirements.txt
+   ```
+5. Create a `.env` file:
+   ```
+   MONGODB_URL=mongodb://localhost:27017
+   SECRET_KEY=your_secret_key_here
+   ALGORITHM=HS256
+   ACCESS_TOKEN_EXPIRE_MINUTES=30
+   ```
+6. Run the FastAPI server:
+   ```
+   python main.py
+   ```
+7. The API will be available at `http://localhost:8000`
 
-# Step 3: Install the necessary dependencies.
-npm i
+## API Documentation
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+Once the backend server is running, you can access the interactive API documentation at:
+- Swagger UI: http://localhost:8000/docs
+- ReDoc: http://localhost:8000/redoc
+
+## Project Structure
+
+```
+├── public/                 # Static files
+├── src/
+│   ├── components/         # React components
+│   ├── pages/              # Page components
+│   ├── store/              # Redux store
+│   ├── services/           # API services
+│   ├── hooks/              # Custom React hooks
+│   ├── lib/                # Utility functions
+│   ├── App.tsx             # Main app component
+│   └── main.tsx            # Entry point
+├── backend/
+│   ├── main.py             # FastAPI entry point
+│   └── requirements.txt    # Python dependencies
+└── README.md
 ```
 
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/a04b1f57-d51b-42b3-a1c0-f37236f9f0e3) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+## License
+MIT

@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import { Project } from "@/store/projectsSlice";
 
 interface ProjectFormData {
   title: string;
@@ -58,7 +59,8 @@ const PostProjectForm = () => {
       };
 
       const resultAction = await dispatch(createProject(projectData));
-      const newProject = resultAction.payload;
+      // Fixed TypeScript error by correctly typing the payload
+      const newProject = resultAction.payload as Project;
       
       toast.success("Project posted successfully!");
       navigate(`/projects/${newProject.id}`);

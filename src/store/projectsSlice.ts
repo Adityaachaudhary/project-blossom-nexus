@@ -1,6 +1,6 @@
 
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import axios from "axios";
+import { projectService } from "@/services/api";
 
 export interface Project {
   id: string;
@@ -17,16 +17,20 @@ interface ProjectsState {
   selectedProject: Project | null;
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
+  filters: {
+    tech: string | null;
+    minBudget: number | null;
+    maxBudget: number | null;
+    status: "ALL" | "OPEN" | "COMPLETED";
+  };
+  pagination: {
+    skip: number;
+    limit: number;
+    total: number;
+  };
 }
 
-const initialState: ProjectsState = {
-  projects: [],
-  selectedProject: null,
-  status: "idle",
-  error: null,
-};
-
-// For now we'll use mockup data since we don't have a backend yet
+// Mock projects to use while backend is being set up
 const mockProjects: Project[] = [
   {
     id: "1",
@@ -84,53 +88,165 @@ const mockProjects: Project[] = [
   },
 ];
 
-// Mock API calls with thunks
-export const fetchProjects = createAsyncThunk("projects/fetchProjects", async () => {
-  // Mock API call
-  return new Promise<Project[]>((resolve) => {
-    setTimeout(() => {
-      resolve(mockProjects);
-    }, 500);
-  });
-});
+const initialState: ProjectsState = {
+  projects: [],
+  selectedProject: null,
+  status: "idle",
+  error: null,
+  filters: {
+    tech: null,
+    minBudget: null,
+    maxBudget: null,
+    status: "ALL",
+  },
+  pagination: {
+    skip: 0,
+    limit: 10,
+    total: 0,
+  }
+};
 
-export const fetchProjectById = createAsyncThunk("projects/fetchProjectById", async (id: string) => {
-  // Mock API call
-  return new Promise<Project | undefined>((resolve) => {
-    setTimeout(() => {
-      const project = mockProjects.find(p => p.id === id);
-      resolve(project);
-    }, 300);
-  });
-});
+// Async thunks for API interactions
+export const fetchProjects = createAsyncThunk(
+  "projects/fetchProjects",
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      // For mocking API call during development
+      if (process.env.NODE_ENV === 'development' && !import.meta.env.VITE_USE_API) {
+        return new Promise<Project[]>((resolve) => {
+          setTimeout(() => {
+            resolve(mockProjects);
+          }, 500);
+        });
+      }
+      
+      const state = getState() as { projects: ProjectsState };
+      const { filters, pagination } = state.projects;
+      
+      // Convert filters to API params
+      const params: Record<string, any> = {
+        skip: pagination.skip,
+        limit: pagination.limit,
+      };
+      
+      if (filters.tech) params.tech = filters.tech;
+      if (filters.minBudget) params.min_budget = filters.minBudget;
+      if (filters.maxBudget) params.max_budget = filters.maxBudget;
+      if (filters.status !== "ALL") params.status = filters.status;
+      
+      const response = await projectService.getProjects(params);
+      
+      // Convert API response to our Project type
+      const projects = response.map((item: any) => ({
+        id: item.id,
+        title: item.title,
+        description: item.description,
+        budget: item.budget,
+        techStack: item.tech_stack,
+        status: item.status,
+        createdAt: item.created_at,
+      }));
+      
+      return projects;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.detail || "Failed to fetch projects");
+    }
+  }
+);
+
+export const fetchProjectById = createAsyncThunk(
+  "projects/fetchProjectById",
+  async (id: string, { rejectWithValue }) => {
+    try {
+      // For mocking API call during development
+      if (process.env.NODE_ENV === 'development' && !import.meta.env.VITE_USE_API) {
+        return new Promise<Project | undefined>((resolve) => {
+          setTimeout(() => {
+            const project = mockProjects.find(p => p.id === id);
+            resolve(project);
+          }, 300);
+        });
+      }
+      
+      const response = await projectService.getProjectById(id);
+      
+      // Convert API response to our Project type
+      return {
+        id: response.id,
+        title: response.title,
+        description: response.description,
+        budget: response.budget,
+        techStack: response.tech_stack,
+        status: response.status,
+        createdAt: response.created_at,
+      };
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.detail || "Failed to fetch project");
+    }
+  }
+);
 
 export const createProject = createAsyncThunk(
   "projects/createProject", 
-  async (projectData: Omit<Project, "id" | "createdAt" | "status">) => {
-    // Mock API call
-    return new Promise<Project>((resolve) => {
-      setTimeout(() => {
-        const newProject: Project = {
-          ...projectData,
-          id: Math.random().toString(36).substr(2, 9),
-          status: "OPEN",
-          createdAt: new Date().toISOString(),
-        };
-        resolve(newProject);
-      }, 500);
-    });
+  async (projectData: Omit<Project, "id" | "createdAt" | "status">, { rejectWithValue }) => {
+    try {
+      // For mocking API call during development
+      if (process.env.NODE_ENV === 'development' && !import.meta.env.VITE_USE_API) {
+        return new Promise<Project>((resolve) => {
+          setTimeout(() => {
+            const newProject: Project = {
+              ...projectData,
+              id: Math.random().toString(36).substr(2, 9),
+              status: "OPEN",
+              createdAt: new Date().toISOString(),
+            };
+            resolve(newProject);
+          }, 500);
+        });
+      }
+      
+      const response = await projectService.createProject({
+        title: projectData.title,
+        description: projectData.description,
+        budget: projectData.budget,
+        tech_stack: projectData.techStack,
+      });
+      
+      // Convert API response to our Project type
+      return {
+        id: response.id,
+        title: response.title,
+        description: response.description,
+        budget: response.budget,
+        techStack: response.tech_stack,
+        status: response.status,
+        createdAt: response.created_at,
+      };
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.detail || "Failed to create project");
+    }
   }
 );
 
 export const updateProjectStatus = createAsyncThunk(
   "projects/updateProjectStatus", 
-  async (id: string) => {
-    // Mock API call
-    return new Promise<{ id: string; status: "COMPLETED" }>((resolve) => {
-      setTimeout(() => {
-        resolve({ id, status: "COMPLETED" });
-      }, 300);
-    });
+  async (id: string, { rejectWithValue }) => {
+    try {
+      // For mocking API call during development
+      if (process.env.NODE_ENV === 'development' && !import.meta.env.VITE_USE_API) {
+        return new Promise<{ id: string; status: "COMPLETED" }>((resolve) => {
+          setTimeout(() => {
+            resolve({ id, status: "COMPLETED" });
+          }, 300);
+        });
+      }
+      
+      const response = await projectService.updateProjectStatus(id, "COMPLETED");
+      
+      return { id, status: "COMPLETED" as const };
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.detail || "Failed to update project status");
+    }
   }
 );
 
@@ -141,9 +257,27 @@ const projectsSlice = createSlice({
     clearSelectedProject(state) {
       state.selectedProject = null;
     },
+    setTechFilter(state, action: PayloadAction<string | null>) {
+      state.filters.tech = action.payload;
+      state.pagination.skip = 0; // Reset pagination when filters change
+    },
+    setBudgetFilter(state, action: PayloadAction<{ min: number | null; max: number | null }>) {
+      state.filters.minBudget = action.payload.min;
+      state.filters.maxBudget = action.payload.max;
+      state.pagination.skip = 0; // Reset pagination when filters change
+    },
+    setStatusFilter(state, action: PayloadAction<"ALL" | "OPEN" | "COMPLETED">) {
+      state.filters.status = action.payload;
+      state.pagination.skip = 0; // Reset pagination when filters change
+    },
+    setPage(state, action: PayloadAction<number>) {
+      const skip = action.payload * state.pagination.limit;
+      state.pagination.skip = skip;
+    },
   },
   extraReducers: (builder) => {
     builder
+      // fetchProjects
       .addCase(fetchProjects.pending, (state) => {
         state.status = "loading";
       })
@@ -155,6 +289,8 @@ const projectsSlice = createSlice({
         state.status = "failed";
         state.error = action.error.message || "Failed to fetch projects";
       })
+      
+      // fetchProjectById
       .addCase(fetchProjectById.pending, (state) => {
         state.status = "loading";
       })
@@ -166,9 +302,13 @@ const projectsSlice = createSlice({
         state.status = "failed";
         state.error = action.error.message || "Failed to fetch project";
       })
+      
+      // createProject
       .addCase(createProject.fulfilled, (state, action) => {
         state.projects.unshift(action.payload);
       })
+      
+      // updateProjectStatus
       .addCase(updateProjectStatus.fulfilled, (state, action) => {
         const index = state.projects.findIndex(p => p.id === action.payload.id);
         if (index !== -1) {
@@ -181,5 +321,12 @@ const projectsSlice = createSlice({
   },
 });
 
-export const { clearSelectedProject } = projectsSlice.actions;
+export const { 
+  clearSelectedProject,
+  setTechFilter,
+  setBudgetFilter,
+  setStatusFilter,
+  setPage
+} = projectsSlice.actions;
+
 export default projectsSlice.reducer;
