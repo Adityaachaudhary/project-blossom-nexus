@@ -76,7 +76,7 @@ const ProjectList = () => {
           >
             All Technologies
           </Button>
-          {allTechStacks.map((tech) => (
+          {allTechStacks.map((tech: string) => (
             <Button
               key={tech}
               variant={selectedTechFilter === tech ? "default" : "outline"}
