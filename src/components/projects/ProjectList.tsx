@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { fetchProjects, setTechFilter, setStatusFilter } from "@/store/projectsSlice";
@@ -112,6 +113,7 @@ const ProjectList = () => {
                   </SheetDescription>
                 </SheetHeader>
                 
+                <div className="py-4 space-y-6">
                   {/* Tech Stack Filter (Mobile) */}
                   <div className="space-y-2">
                     <Label>Tech Stack</Label>
