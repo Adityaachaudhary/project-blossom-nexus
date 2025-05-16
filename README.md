@@ -1,65 +1,76 @@
 
-# FreelanceHub
+# Project Name
 
-A modern freelance marketplace that connects talented freelancers with businesses and individuals seeking their services.
+This project follows a client-server architecture with a React frontend and FastAPI backend.
 
 ## Project Structure
 
-This project is organized into two main directories:
-
-- `client/` - Frontend React application
-- `server/` - Backend FastAPI application
+```
+project-root/  
+├── client/                 # Frontend (React + TailwindCSS + Redux)  
+│   ├── public/             # Public assets (like images, icons)  
+│   ├── src/  
+│   │   ├── components/     # Reusable UI components  
+│   │   ├── features/       # Redux slices or feature-based components  
+│   │   ├── pages/          # Page components (Home, Projects, etc.)  
+│   │   ├── hooks/          # Custom React hooks  
+│   │   ├── utils/          # Utility functions (like API calls)  
+│   │   ├── store/          # Redux store configuration  
+│   │   ├── styles/         # Global styles (Tailwind configuration)  
+│   │   ├── App.tsx  
+│   │   └── main.tsx  
+│   ├── .env                # Environment variables (frontend-specific)  
+│   ├── package.json  
+│   ├── tsconfig.json  
+│   └── vite.config.ts      # Vite configuration  
+├── server/                 # Backend (FastAPI)  
+│   ├── app/  
+│   │   ├── main.py         # Entry point  
+│   │   ├── models/         # Pydantic models  
+│   │   ├── routes/         # API routes  
+│   │   ├── schemas/        # Data validation schemas  
+│   │   ├── services/       # Business logic  
+│   │   ├── database/       # MongoDB connection  
+│   │   └── utils/          # Helper functions  
+│   ├── .env                # Environment variables (backend-specific)  
+│   ├── requirements.txt    # Python dependencies  
+│   └── uvicorn.config.py   # Uvicorn configuration  
+├── .gitignore  
+└── README.md  
+```
 
 ## Getting Started
 
-### Client
+### Frontend (Client)
 
-Navigate to the client directory:
+1. Navigate to the client directory:
+   ```
+   cd client
+   ```
 
-```bash
-cd client
-npm install
-npm run dev
-```
+2. Install dependencies:
+   ```
+   npm install
+   ```
 
-### Server
+3. Start development server:
+   ```
+   npm run dev
+   ```
 
-Navigate to the server directory:
+### Backend (Server)
 
-```bash
-cd server
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-pip install -r requirements.txt
-uvicorn main:app --reload
-```
+1. Navigate to the server directory:
+   ```
+   cd server
+   ```
 
-## Features
+2. Install dependencies:
+   ```
+   pip install -r requirements.txt
+   ```
 
-- Browse available projects
-- Post new projects
-- User authentication
-- Project details and management
-- Responsive design
-
-## Technology Stack
-
-### Frontend
-- React
-- TypeScript
-- Tailwind CSS
-- shadcn/ui components
-- Redux Toolkit
-- React Router
-- Framer Motion
-
-### Backend
-- FastAPI
-- Python
-- MongoDB (with Motor)
-- JWT Authentication
-- Python-dotenv
-
-## Deployment
-
-Follow the instructions in each directory's README file for deployment options.
+3. Start development server:
+   ```
+   python uvicorn.config.py
+   ```
