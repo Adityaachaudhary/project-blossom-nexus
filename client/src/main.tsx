@@ -1,11 +1,15 @@
 
-import { createRoot } from 'react-dom/client'
-import App from './App.tsx'
-import './index.css'
-import { ThemeProvider } from './components/ThemeProvider.tsx'
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App';
+import { ThemeProvider } from './components/ThemeProvider';
+import './styles/globals.css';
+import './styles/auth.css';
 
-createRoot(document.getElementById("root")!).render(
-  <ThemeProvider>
-    <App />
-  </ThemeProvider>
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <ThemeProvider defaultTheme="system" storageKey="freelance-hub-theme">
+      <App />
+    </ThemeProvider>
+  </React.StrictMode>,
 );

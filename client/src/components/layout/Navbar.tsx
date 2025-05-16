@@ -1,15 +1,26 @@
 
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "../ThemeToggle";
-import { Menu, X, ChevronDown } from "lucide-react";
+import { Menu, X, ChevronDown, LogOut, User } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, isAuthenticated, logout } = useAuth();
 
   // Close mobile menu when route changes
   useEffect(() => {
@@ -35,6 +46,12 @@ const Navbar = () => {
   // Check if link is active
   const isLinkActive = (path: string) => {
     return location.pathname === path;
+  };
+
+  // Handle logout
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
   };
 
   return (
@@ -80,15 +97,47 @@ const Navbar = () => {
           </div>
           <div className="hidden md:flex items-center space-x-4">
             <ThemeToggle />
-            <Button asChild variant="outline" className="border-gray-200 hover:border-primary dark:border-gray-700 transition-colors">
-              <Link to="/login">Login</Link>
-            </Button>
-            <Button asChild variant="outline" className="border-gray-200 hover:border-primary dark:border-gray-700 transition-colors">
-              <Link to="/register">Sign Up</Link>
-            </Button>
-            <Button asChild className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white transition-all duration-300">
-              <Link to="/post-project">Post a Project</Link>
-            </Button>
+            
+            {isAuthenticated ? (
+              <>
+                <Button asChild className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white transition-all duration-300">
+                  <Link to="/post-project">Post a Project</Link>
+                </Button>
+                
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="border-gray-200 hover:border-primary dark:border-gray-700">
+                      <div className="flex items-center">
+                        <div className="h-6 w-6 rounded-full bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center text-white text-xs font-bold mr-2">
+                          {user?.firstName?.charAt(0)}
+                        </div>
+                        <span className="hidden lg:block">{user?.firstName}</span>
+                        <ChevronDown className="ml-2 h-4 w-4" />
+                      </div>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem>
+                      <User className="mr-2 h-4 w-4" /> Profile
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleLogout}>
+                      <LogOut className="mr-2 h-4 w-4" /> Logout
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </>
+            ) : (
+              <>
+                <Button asChild variant="outline" className="border-gray-200 hover:border-primary dark:border-gray-700 transition-colors">
+                  <Link to="/login">Login</Link>
+                </Button>
+                <Button asChild variant="outline" className="border-gray-200 hover:border-primary dark:border-gray-700 transition-colors">
+                  <Link to="/register">Sign Up</Link>
+                </Button>
+              </>
+            )}
           </div>
           <div className="flex items-center md:hidden space-x-4">
             <ThemeToggle />
@@ -133,12 +182,34 @@ const Navbar = () => {
               </MobileNavLink>
               
               <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
-                <MobileNavLink to="/login" active={isLinkActive("/login")}>
-                  Login
-                </MobileNavLink>
-                <MobileNavLink to="/register" active={isLinkActive("/register")}>
-                  Sign Up
-                </MobileNavLink>
+                {isAuthenticated ? (
+                  <>
+                    <div className="px-3 py-2 flex items-center">
+                      <div className="h-8 w-8 rounded-full bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center text-white font-bold mr-2">
+                        {user?.firstName?.charAt(0)}
+                      </div>
+                      <div>
+                        <p className="font-medium text-gray-900 dark:text-white">{user?.firstName} {user?.lastName}</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">{user?.email}</p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={handleLogout}
+                      className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center"
+                    >
+                      <LogOut className="h-4 w-4 mr-2" /> Logout
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <MobileNavLink to="/login" active={isLinkActive("/login")}>
+                      Login
+                    </MobileNavLink>
+                    <MobileNavLink to="/register" active={isLinkActive("/register")}>
+                      Sign Up
+                    </MobileNavLink>
+                  </>
+                )}
               </div>
               
               <div className="pt-2">

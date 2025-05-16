@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "./store/store";
 import Layout from "./components/layout/Layout";
@@ -18,31 +18,76 @@ import NotFound from "./pages/NotFound";
 import ContactPage from "./pages/ContactPage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import TermsPage from "./pages/TermsPage";
+import { AuthProvider } from "./context/AuthContext";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <Provider store={store}>
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Layout><HomePage /></Layout>} />
-            <Route path="/projects" element={<Layout><ProjectsPage /></Layout>} />
-            <Route path="/projects/:id" element={<Layout><ProjectDetailPage /></Layout>} />
-            <Route path="/post-project" element={<Layout><PostProjectPage /></Layout>} />
-            <Route path="/about" element={<Layout><AboutPage /></Layout>} />
-            <Route path="/login" element={<Layout><LoginPage /></Layout>} />
-            <Route path="/register" element={<Layout><RegisterPage /></Layout>} />
-            <Route path="/contact" element={<Layout><ContactPage /></Layout>} />
-            <Route path="/privacy" element={<Layout><PrivacyPolicyPage /></Layout>} />
-            <Route path="/terms" element={<Layout><TermsPage /></Layout>} />
-            <Route path="*" element={<Layout><NotFound /></Layout>} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
+      <AuthProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              {/* Public routes - accessible without authentication */}
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+              
+              {/* Protected routes - require authentication */}
+              <Route path="/" element={
+                <ProtectedRoute>
+                  <Layout><HomePage /></Layout>
+                </ProtectedRoute>
+              } />
+              <Route path="/projects" element={
+                <ProtectedRoute>
+                  <Layout><ProjectsPage /></Layout>
+                </ProtectedRoute>
+              } />
+              <Route path="/projects/:id" element={
+                <ProtectedRoute>
+                  <Layout><ProjectDetailPage /></Layout>
+                </ProtectedRoute>
+              } />
+              <Route path="/post-project" element={
+                <ProtectedRoute>
+                  <Layout><PostProjectPage /></Layout>
+                </ProtectedRoute>
+              } />
+              <Route path="/about" element={
+                <ProtectedRoute>
+                  <Layout><AboutPage /></Layout>
+                </ProtectedRoute>
+              } />
+              <Route path="/contact" element={
+                <ProtectedRoute>
+                  <Layout><ContactPage /></Layout>
+                </ProtectedRoute>
+              } />
+              <Route path="/privacy" element={
+                <ProtectedRoute>
+                  <Layout><PrivacyPolicyPage /></Layout>
+                </ProtectedRoute>
+              } />
+              <Route path="/terms" element={
+                <ProtectedRoute>
+                  <Layout><TermsPage /></Layout>
+                </ProtectedRoute>
+              } />
+              
+              {/* 404 page */}
+              <Route path="*" element={
+                <ProtectedRoute>
+                  <Layout><NotFound /></Layout>
+                </ProtectedRoute>
+              } />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </AuthProvider>
     </QueryClientProvider>
   </Provider>
 );
